@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Comment on Show{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <h2>Comment on {{ show.title }}</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_text">Comment:</label>
+                <textarea class="form-control" name="text" id="id_text" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="id_rating_numerical">Numerical Rating:</label>
+                <input class="form-control" type="number" name="rating_numerical" id="id_rating_numerical" min="1" max="10" required>
+            </div>
+
+            <div class="form-group">
+                <label>Thumb Rating:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="rating_thumb_up" id="id_rating_thumb_up">
+                    <label class="form-check-label" for="id_rating_thumb_up">
+                        <i class="fas fa-thumbs-up"></i> Thumb Up
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="rating_thumb_down" id="id_rating_thumb_down">
+                    <label class="form-check-label" for="id_rating_thumb_down">
+                        <i class="fas fa-thumbs-down"></i> Thumb Down
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_rating_star">Star Rating:</label>
+                <input class="form-control" type="number" name="rating_star" id="id_rating_star" min="1" max="5" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
+    </div>
+{% endblock %}

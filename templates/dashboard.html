@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+{% endblock css %}
+
+{% block content %}
+    <!-- Jumbotron for Welcome Message -->
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to the Website</h1>
+        <p class="lead">Vote for Your Favorite Show</p>
+    </div>
+
+    <!-- Display any messages -->
+    <div class="container">
+        {% if messages_list %}
+            <div class="alert alert-info" role="alert">
+                <ul>
+                    {% for message in messages_list %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+<!-- Display ranked shows with comments -->
+<h2>Ranked Shows with Comments</h2>
+{% if ranked_shows %}
+    <div class="row">
+        {% for ranked_show in ranked_shows %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ ranked_show.show.show_picture.url }}" class="card-img-top" alt="{{ ranked_show.show.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ ranked_show.show.title }}</h5>
+                        <p class="card-text">
+                            <strong>Genre:</strong> {{ ranked_show.show.genre }}<br>
+                            <strong>Airing Time:</strong> {{ ranked_show.show.airing_time }}<br>
+                            <strong>Average Sentiment Score:</strong> {{ ranked_show.average_sentiment_score }}
+                        </p>
+                        <a href="{% url 'view_comments' ranked_show.show.id %}" class="mt-2 btn btn-secondary">View Comments</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No ranked shows available.</p>
+{% endif %}
+
+
+
+        <!-- Display all shows -->
+        <h2>Shows</h2>
+        <div class="row">
+            {% for show in shows %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ show.title }}</h5>
+                            <p class="card-text">
+                                <strong>Genre:</strong> {{ show.genre }}<br>
+                                <strong>Airing Time:</strong> {{ show.airing_time }}
+                            </p>
+                            {% if show.show_picture %}
+                                <img src="{{ show.show_picture.url }}" class="card-img-top" alt="{{ show.title }}">
+                            {% endif %}
+                            <a href="{% url 'comment_show' show.id %}" class="mt-2 btn btn-primary">Comment Now</a>
+                            <a href="{% url 'view_comments' show.id %}" class="mt-2 btn btn-secondary">View Comments</a> <!-- Add this line -->
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

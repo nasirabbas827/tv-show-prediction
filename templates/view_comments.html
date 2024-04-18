@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}View Comments{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Comments and Ratings</h2>
+    <div class="row">
+        {% for item in comments_with_user_info %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Comment by {{ item.username }}</h5>
+                        <img src="{{ item.profile_picture }}" alt="{{ item.username }} Profile Picture" class="img-fluid mb-2" style="max-width: 100px;">
+                        <p class="card-text">{{ item.comment.text }}</p>
+                        <p class="card-text">Numerical Rating: {{ item.comment.rating_numerical }}</p>
+                        <p class="card-text">Thumb Up: {{ item.comment.rating_thumb_up }}</p>
+                        <p class="card-text">Thumb Down: {{ item.comment.rating_thumb_down }}</p>
+                        <p class="card-text">Star Rating: {{ item.comment.rating_star }}</p>
+                        <p class="card-text">Sentiment Label: {{ item.comment.sentiment_label }}</p>
+                        <p class="card-text">Sentiment Score: {{ item.comment.sentiment_score }}</p>
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                </div><div class="row">
+            {% endif %}
+        {% empty %}
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <p>No comments available.</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
