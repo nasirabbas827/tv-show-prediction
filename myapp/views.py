@@ -135,6 +135,11 @@ def comment_show(request, show_id):
 
     return render(request, 'comment_show.html', {'show': show, 'form': form})
 
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from .models import Comment, Profile
+
 @login_required
 def view_comments(request, show_id):
     show_comments = Comment.objects.filter(show_id=show_id)
@@ -148,8 +153,37 @@ def view_comments(request, show_id):
             'profile_picture': user_profile.profile_picture.url
         })
 
-    return render(request, 'view_comments.html', {'comments_with_user_info': comments_with_user_info})
+    # Query to get age distribution
+    age_distribution = Profile.objects.values('age').annotate(comment_count=Count('user__comment'))
 
+    # Prepare data for age distribution chart
+    age_labels = ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61+']
+    age_data = [0] * len(age_labels)
+    for item in age_distribution:
+        if item['age'] is not None:
+            age_group_index = min(item['age'] // 10, len(age_labels) - 1)
+            age_data[age_group_index] += item['comment_count']
+
+    # Query to get gender distribution
+    gender_distribution = Profile.objects.values('gender').annotate(comment_count=Count('user__comment'))
+
+    # Prepare data for gender distribution chart
+    gender_labels = ['Male', 'Female']
+    gender_data = [0, 0]
+    for item in gender_distribution:
+        if item['gender'] == 'M':
+            gender_data[0] += item['comment_count']
+        elif item['gender'] == 'F':
+            gender_data[1] += item['comment_count']
+
+    context = {
+        'age_labels': age_labels,
+        'age_data': age_data,
+        'gender_labels': gender_labels,
+        'gender_data': gender_data,
+        'comments_with_user_info': comments_with_user_info
+    }
+    return render(request, 'view_comments.html', context)
 
 @login_required
 def update_profile(request):
@@ -200,5 +234,3 @@ def change_password(request):
 def voter_logout(request):
     logout(request)
     return redirect('user_login') 
-
-

@@ -36,4 +36,56 @@
         {% endfor %}
     </div>
 </div>
+<div class="container">
+    <h2>Comment Users Age Distribution</h2>
+    <canvas id="ageChart" width="400" height="200"></canvas>
+
+    <h2>Comment Users Gender Distribution</h2>
+    <canvas id="genderChart" width="400" height="200"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Age distribution chart
+    var ageCtx = document.getElementById('ageChart').getContext('2d');
+    var ageChart = new Chart(ageCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ age_labels|safe }},
+            datasets: [{
+                label: 'Age Distribution',
+                data: {{ age_data|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    // Gender distribution chart
+    var genderCtx = document.getElementById('genderChart').getContext('2d');
+    var genderChart = new Chart(genderCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ gender_labels|safe }},
+            datasets: [{
+                label: 'Gender Distribution',
+                data: {{ gender_data|safe }},
+                backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)'],
+                borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+                borderWidth: 1
+            }]
+        },
+        options: {}
+    });
+</script>
 {% endblock %}
